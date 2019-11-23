@@ -1,0 +1,32 @@
+<mat-sidenav-container class="home__wrapper">
+  <mat-sidenav-content>
+    <div class="home__main-content">
+      <form class="home__search"
+            [formGroup]="searchForm">
+        <mat-form-field class="example-full-width">
+          <input matInput
+                 placeholder="Select city"
+                 aria-label="City"
+                 [matAutocomplete]="auto"
+                 formControlName="citySearch"
+                 >
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let city of citiesList$ | async"
+                        [value]="city.LocalizedName">
+              {{ city.LocalizedName }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </form>
+      <div class="home__weather-section">
+        <div class="home__header-section">
+          <div class="home__current-city">
+            <p class="home__city-name"></p>
+            <p class="home__city-temperature"></p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

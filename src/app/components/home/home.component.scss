@@ -1,0 +1,17 @@
+.home {
+  &__wrapper {
+    position: absolute;
+    top: 64px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+  }
+
+  &__main-content {
+    display: flex;
+    justify-content: center;
+    max-width: 850px ;
+    margin: 0 auto;
+  }
+}

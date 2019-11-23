@@ -11,7 +11,8 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
-          "spec": false
+          "spec": false,
+          "changeDetection": "OnPush"
         }
       },
       "architect": {
