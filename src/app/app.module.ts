@@ -15,6 +15,7 @@ import { FavoriteComponent } from './components/favorite/favorite.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 
 import {CitiesService} from './shared/services/cities.service';
+import {FavoriteService} from './shared/services/favorite.service';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import {CitiesService} from './shared/services/cities.service';
     HttpClientModule
   ],
   providers: [
-    CitiesService
+    CitiesService,
+    FavoriteService
   ],
   bootstrap: [AppComponent]
 })

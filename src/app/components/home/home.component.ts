@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {CitiesService} from '../../shared/services/cities.service';
 import {ICityInfo} from '../../shared/interfaces/cities.interface';
 import {Observable} from 'rxjs';
 import {debounceTime, filter, mergeMap} from 'rxjs/operators';
+import {FavoriteService} from '../../shared/services/favorite.service';
 
 @Component({
   selector: 'app-home',
@@ -16,10 +17,13 @@ export class HomeComponent implements OnInit {
   searchForm!: FormGroup;
   citiesList$: Observable<ICityInfo[]>;
   citiesList: ICityInfo[];
+  isFavorite = new Observable<boolean>();
 
   constructor(private  fb: FormBuilder,
-              private citiesService: CitiesService) { }
-
+              private citiesService: CitiesService,
+              private favService: FavoriteService) {
+    this.isFavorite = this.favService.isFavorite$;
+  }
 
   ngOnInit() {
     this.initSearchFormForm();
@@ -44,5 +48,9 @@ export class HomeComponent implements OnInit {
         filter(text => this.citiesList ? !this.citiesList.find(city => city.LocalizedName === text) : true),
         mergeMap(value => this.citiesService.getCities(value))
       );
+  }
+
+  addToFavorite() {
+    // this.favService.isFavorite();
   }
 }

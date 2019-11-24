@@ -10,8 +10,37 @@
 
   &__main-content {
     display: flex;
+    max-width: 850px;
     justify-content: center;
-    max-width: 850px ;
+    flex-wrap: wrap;
     margin: 0 auto;
+  }
+
+  &__search {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  &__weather-section {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  &__header-section {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  &__favorite-block {
+    display: flex;
+  }
+
+  &__favorite-icon {
+    display: flex;
+    align-items: center;
   }
 }
