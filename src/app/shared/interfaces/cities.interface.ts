@@ -1,4 +1,4 @@
 export interface ICityInfo {
-  key: number;
+  Key: string;
   LocalizedName: string;
 }

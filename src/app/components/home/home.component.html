@@ -3,14 +3,15 @@
     <div class="home__main-content">
       <form class="home__search"
             [formGroup]="searchForm">
-        <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width"
+                        floatLabel="auto">
           <input matInput
                  placeholder="Select city"
                  aria-label="City"
                  [matAutocomplete]="auto"
-                 formControlName="citySearch"
-                 >
-          <mat-autocomplete #auto="matAutocomplete">
+                 formControlName="citySearch">
+          <mat-autocomplete #auto="matAutocomplete"
+                            (optionSelected)="getCurrentCityWeather($event.option.value)">
             <mat-option *ngFor="let city of citiesList$ | async"
                         [value]="city.LocalizedName">
               {{ city.LocalizedName }}
@@ -21,8 +22,9 @@
       <div class="home__weather-section">
         <div class="home__header-section">
           <div class="home__current-city">
-            <p class="home__city-name">Tel Aviv</p>
-            <p class="home__city-temperature">38* </p>
+            <p class="home__city-name">{{ selectedCity?.LocalizedName || defaultCity?.LocalizedName }}</p>
+            <span class="home__city-temperature">{{ currentCityWeather?.Temperature.Metric.Value || defaultCityWeather?.Temperature.Metric.Value }} </span>
+            <span>{{ currentCityWeather?.Temperature.Metric.Unit || defaultCityWeather?.Temperature.Metric.Unit }}</span>
           </div>
           <div class="home__favorite-block">
             <div class="home__favorite-icon">
@@ -41,6 +43,9 @@
               Add to favorite
             </button>
           </div>
+        </div>
+        <div class="home__image-weather">
+<!--          <img src="{{currentCityWeather?.WeatherIcon}}" alt="{{currentCityWeather?.WeatherText}}">-->
         </div>
       </div>
     </div>

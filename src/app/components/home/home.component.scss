@@ -26,6 +26,7 @@
     display: flex;
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   &__header-section {
@@ -33,6 +34,10 @@
     width: 100%;
     align-items: center;
     justify-content: space-around;
+  }
+
+  &__image-weather {
+    margin: 30px 0 0 0;
   }
 
   &__favorite-block {

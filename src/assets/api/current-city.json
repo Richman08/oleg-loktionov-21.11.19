@@ -1,4 +1,5 @@
 {
+  "key": 182536,
   "result": [
     {
       "LocalObservationDateTime": "2019-11-22T09:31:00+02:00",
@@ -375,7 +376,7 @@
       "MobileLink": "http://m.accuweather.com/en/gr/athens/182536/current-weather/182536?lang=en-us",
       "Link": "http://www.accuweather.com/en/gr/athens/182536/current-weather/182536?lang=en-us"
     }
-  ]
+  ],
   "jsonrpc": "2.0"
 }
 
