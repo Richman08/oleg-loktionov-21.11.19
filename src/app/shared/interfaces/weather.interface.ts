@@ -1,5 +1,6 @@
 export interface IWeather {
   WeatherIcon: number;
+  WeatherText: string;
   Temperature: ITemperature;
 }
 

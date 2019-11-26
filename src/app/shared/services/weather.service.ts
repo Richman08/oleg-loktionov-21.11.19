@@ -5,12 +5,20 @@ import {BaseApiService} from '../../@core/api/shared/base-api.service';
 @Injectable({
   providedIn: 'root'
 })
-export class CitiesService {
+export class WeatherService {
 
   constructor(private http: HttpClient,
               private apiService: BaseApiService) { }
 
-  getCities() {
-    return this.apiService.get('autocomplete-search.json');
+  getCurrentCityWeather() {
+    return this.apiService.get('current-city.json');
+  }
+
+  getDefaultCityWeather() {
+    return this.apiService.get('default-city-weather.json');
+  }
+
+  getDailyForecast() {
+    return this.apiService.get('default-city-forecast.json');
   }
 }

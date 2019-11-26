@@ -2,10 +2,13 @@ import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@an
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {CitiesService} from '../../shared/services/cities.service';
 import {ICityInfo} from '../../shared/interfaces/cities.interface';
-import {Observable} from 'rxjs';
-import {debounceTime, filter, map, mergeMap, startWith} from 'rxjs/operators';
+import {from, Observable, of, Subject} from 'rxjs';
+import {debounceTime, map, startWith, switchMap} from 'rxjs/operators';
 import {FavoriteService} from '../../shared/services/favorite.service';
 import {IWeather} from '../../shared/interfaces/weather.interface';
+import {WeatherService} from '../../shared/services/weather.service';
+import {IDailyForecast} from '../../shared/interfaces/daily-forecast';
+import {formatDisplayedTimePipe} from '../../shared/pipes/displayed-time.rx-pipe';
 
 @Component({
   selector: 'app-home',
@@ -22,11 +25,13 @@ export class HomeComponent implements OnInit {
   selectedCity: ICityInfo;
   defaultCityWeather: IWeather;
   defaultCityId = '215854';
+  dailyForecast: IDailyForecast[] = [];
   currentCityWeather: IWeather;
   isFavorite = new Observable<boolean>();
 
   constructor(private  fb: FormBuilder,
               private citiesService: CitiesService,
+              private weatherService: WeatherService,
               private favService: FavoriteService,
               private cdr: ChangeDetectorRef) {
     this.isFavorite = this.favService.isFavorite$;
@@ -37,6 +42,7 @@ export class HomeComponent implements OnInit {
     this.initCitiesList();
     this.initDefaultCity();
     this.getDefaultCityWeather(this.defaultCityId);
+    this.initDailyForecast();
     this.filteredCities();
   }
 
@@ -81,10 +87,8 @@ export class HomeComponent implements OnInit {
   }
 
   getDefaultCityWeather(Key) {
-    // this.defaultCity = this.citiesList.find((item) => item.LocalizedName === cityName);
-    this.citiesService.getCurrentCityWeather().subscribe((currCity) => {
-      console.log('currCity', currCity)
-      this.defaultCityWeather = currCity[0];
+    this.weatherService.getDefaultCityWeather().subscribe((defaultCity) => {
+      this.defaultCityWeather = defaultCity[0];
       console.log(' this.defaultCityWeather',  this.defaultCityWeather);
       this.cdr.detectChanges();
     });
@@ -92,10 +96,24 @@ export class HomeComponent implements OnInit {
 
   getCurrentCityWeather(cityName) {
     this.selectedCity = this.citiesList.find((item) => item.LocalizedName === cityName);
-    this.citiesService.getCurrentCityWeather().subscribe((currCity) => {
+    this.weatherService.getCurrentCityWeather().subscribe((currCity) => {
       this.currentCityWeather = currCity[0];
       console.log('this.currentCityWeather', this.currentCityWeather);
       this.cdr.detectChanges();
+    });
+  }
+
+  initDailyForecast() {
+    this.weatherService.getDailyForecast()
+      .pipe(
+        switchMap((data) => of(data[0].DailyForecasts)
+          .pipe(
+            formatDisplayedTimePipe('Date', 'displayedDate')
+          ))
+      )
+      .subscribe((dailyForecasts) => {
+        this.dailyForecast = dailyForecasts;
+        this.cdr.detectChanges();
     });
   }
 

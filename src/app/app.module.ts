@@ -24,7 +24,7 @@ import {FavoriteService} from './shared/services/favorite.service';
     LoaderComponent,
     HomeComponent,
     FavoriteComponent,
-    HeaderComponent
+    HeaderComponent,
   ],
   imports: [
     CoreModule,

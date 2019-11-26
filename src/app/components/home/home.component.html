@@ -28,11 +28,11 @@
           </div>
           <div class="home__favorite-block">
             <div class="home__favorite-icon">
-              <i class="material-icons"
+              <i class="home__fav-icon material-icons"
                  *ngIf="!isFavorite">
                 favorite
               </i>
-              <i class="material-icons"
+              <i class="home__fav-icon material-icons"
                  *ngIf="isFavorite">
                 favorite_border
               </i>
@@ -44,8 +44,19 @@
             </button>
           </div>
         </div>
-        <div class="home__image-weather">
+        <div class="home__current-weather">
 <!--          <img src="{{currentCityWeather?.WeatherIcon}}" alt="{{currentCityWeather?.WeatherText}}">-->
+          <p class="home__weather-title">{{ currentCityWeather?.WeatherText || defaultCityWeather?.WeatherText }}</p>
+        </div>
+        <div class="home__daily-forecast-section">
+          <div class="home__day-weather-block"
+               *ngFor="let day of dailyForecast">
+            <div class="home__day-name">
+              <p>{{ day.displayedDate }}</p>
+            </div>
+            <p class="home__city-temperature">{{ day?.Temperature.Maximum.Value }}</p>
+            <span>C</span>
+          </div>
         </div>
       </div>
     </div>
