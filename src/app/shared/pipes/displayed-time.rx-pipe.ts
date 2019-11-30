@@ -29,11 +29,9 @@ const formatDisplayedTimePipeFromObject = (
   property: string,
   resultPropertyName: string = 'displayedTime',
 ) => {
-  let toReturn = '';
-  toReturn = moment(object.Date).format('dddd');
 
   return Object.defineProperty(object, resultPropertyName, {
-    value: toReturn,
+    value: moment(object.Date).format('dddd'),
     configurable: true,
     enumerable: true,
     writable: true,

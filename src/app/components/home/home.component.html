@@ -23,7 +23,7 @@
         <div class="home__header-section">
           <div class="home__current-city">
             <p class="home__city-name">{{ selectedCity?.LocalizedName || defaultCity?.LocalizedName }}</p>
-            <span class="home__city-temperature">{{ currentCityWeather?.Temperature.Metric.Value || defaultCityWeather?.Temperature.Metric.Value }} </span>
+            <span class="home__city-temperature">{{ currentCityWeather?.Temperature.Metric.Value || defaultCityWeather?.Temperature.Metric.Value }}°</span>
             <span>{{ currentCityWeather?.Temperature.Metric.Unit || defaultCityWeather?.Temperature.Metric.Unit }}</span>
           </div>
           <div class="home__favorite-block">
@@ -54,8 +54,8 @@
             <div class="home__day-name">
               <p>{{ day.displayedDate }}</p>
             </div>
-            <p class="home__city-temperature">{{ day?.Temperature.Maximum.Value }}</p>
-            <span>C</span>
+            <p class="home__city-temperature">{{ day?.Temperature.Maximum.Value }}°</p>
+            <span>{{ day?.Temperature.Maximum.Unit }}</span>
           </div>
         </div>
       </div>

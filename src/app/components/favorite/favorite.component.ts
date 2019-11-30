@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {WeatherService} from '../../shared/services/weather.service';
 
 @Component({
   selector: 'app-favorite',
@@ -8,9 +9,20 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 })
 export class FavoriteComponent implements OnInit {
 
-  constructor() { }
+  favoriteCities: [];
+
+  constructor(private weatherService: WeatherService,
+              private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
+    this.getFavoriteCities();
+  }
+
+  getFavoriteCities() {
+    const citiesKeys = Object.values({...localStorage});
+    this.weatherService.getCityWeather();
+    console.log(citiesKeys);
+    // this.favoriteCities = citiesKeys;
   }
 
 }

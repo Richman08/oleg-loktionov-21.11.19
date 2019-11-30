@@ -1,5 +1,5 @@
 import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CitiesService} from '../../shared/services/cities.service';
 import {ICityInfo} from '../../shared/interfaces/cities.interface';
 import {from, Observable, of, Subject} from 'rxjs';
@@ -96,7 +96,7 @@ export class HomeComponent implements OnInit {
 
   getCurrentCityWeather(cityName) {
     this.selectedCity = this.citiesList.find((item) => item.LocalizedName === cityName);
-    this.weatherService.getCurrentCityWeather().subscribe((currCity) => {
+    this.weatherService.getCityWeather().subscribe((currCity) => {
       this.currentCityWeather = currCity[0];
       console.log('this.currentCityWeather', this.currentCityWeather);
       this.cdr.detectChanges();
@@ -118,6 +118,12 @@ export class HomeComponent implements OnInit {
   }
 
   addToFavorite() {
-    // this.favService.isFavorite();
+    if (this.selectedCity) {
+      localStorage.setItem(this.selectedCity.LocalizedName, this.selectedCity.Key);
+
+    } else {
+      localStorage.setItem(this.defaultCity.LocalizedName, this.defaultCity.Key);
+    }
+
   }
 }
