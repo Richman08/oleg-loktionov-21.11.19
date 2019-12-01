@@ -40,6 +40,10 @@
     margin: 0 10px 0 0 ;
   }
 
+  &__favorite-btn {
+    min-width: 170px;
+  }
+
   &__current-weather, &__weather-title {
     display: flex;
     width: 100%;

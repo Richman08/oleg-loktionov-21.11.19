@@ -29,18 +29,25 @@
           <div class="home__favorite-block">
             <div class="home__favorite-icon">
               <i class="home__fav-icon material-icons"
-                 *ngIf="!isFavorite">
+                 *ngIf="isFavorite">
                 favorite
               </i>
               <i class="home__fav-icon material-icons"
-                 *ngIf="isFavorite">
+                 *ngIf="!isFavorite">
                 favorite_border
               </i>
             </div>
             <button mat-stroked-button
                     (click)="addToFavorite()"
-                    class="home__favorite-btn">
+                    class="home__favorite-btn"
+                    *ngIf="!isFavorite">
               Add to favorite
+            </button>
+            <button mat-stroked-button
+                    (click)="removeFromFavorite()"
+                    class="home__favorite-btn"
+                    *ngIf="isFavorite">
+              Remove from favorite
             </button>
           </div>
         </div>

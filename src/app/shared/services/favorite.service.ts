@@ -5,16 +5,15 @@ import {BehaviorSubject} from 'rxjs';
   providedIn: 'root'
 })
 export class FavoriteService {
-
   // tslint:disable-next-line:variable-name
   private _isFavorite = new BehaviorSubject<boolean>(false);
   public isFavorite$ = this._isFavorite.asObservable();
 
-  get isFavorite(): boolean {
-    return this._isFavorite.getValue();
-  }
+  // get isFavorite(): boolean {
+  //   return this._isFavorite.getValue();
+  // }
 
-  set isFavorite(val: boolean) {
-    this._isFavorite.next(val);
+  setIsFavorite() {
+    this._isFavorite.next(!this._isFavorite.value);
   }
 }

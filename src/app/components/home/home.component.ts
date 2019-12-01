@@ -27,26 +27,28 @@ export class HomeComponent implements OnInit {
   defaultCityId = '215854';
   dailyForecast: IDailyForecast[] = [];
   currentCityWeather: IWeather;
-  isFavorite = new Observable<boolean>();
+  isFavorite: boolean;
 
   constructor(private  fb: FormBuilder,
               private citiesService: CitiesService,
               private weatherService: WeatherService,
               private favService: FavoriteService,
               private cdr: ChangeDetectorRef) {
-    this.isFavorite = this.favService.isFavorite$;
+    // this.isFavorite = this.favService.isFavorite$;
   }
 
   ngOnInit() {
-    this.initSearchFormForm();
+    this.initSearchForm();
     this.initCitiesList();
     this.initDefaultCity();
     this.getDefaultCityWeather(this.defaultCityId);
     this.initDailyForecast();
     this.filteredCities();
+    this.checkIsFavorite();
+    this.favService.isFavorite$.subscribe(item => this.isFavorite = item);
   }
 
-  initSearchFormForm() {
+  private initSearchForm() {
     this.searchForm = this.fb.group({
       citySearch: ['']
     });
@@ -86,15 +88,15 @@ export class HomeComponent implements OnInit {
     return this.citiesList.filter(city => city.LocalizedName.toLowerCase().indexOf(filterValue) === 0);
   }
 
-  getDefaultCityWeather(Key) {
+  private getDefaultCityWeather(Key) {
     this.weatherService.getDefaultCityWeather().subscribe((defaultCity) => {
       this.defaultCityWeather = defaultCity[0];
-      console.log(' this.defaultCityWeather',  this.defaultCityWeather);
+      console.log(' this.defaultCityWeather', this.defaultCityWeather);
       this.cdr.detectChanges();
     });
   }
 
-  getCurrentCityWeather(cityName) {
+  private getCurrentCityWeather(cityName) {
     this.selectedCity = this.citiesList.find((item) => item.LocalizedName === cityName);
     this.weatherService.getCityWeather().subscribe((currCity) => {
       this.currentCityWeather = currCity[0];
@@ -103,7 +105,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  initDailyForecast() {
+  private initDailyForecast() {
     this.weatherService.getDailyForecast()
       .pipe(
         switchMap((data) => of(data[0].DailyForecasts)
@@ -114,16 +116,33 @@ export class HomeComponent implements OnInit {
       .subscribe((dailyForecasts) => {
         this.dailyForecast = dailyForecasts;
         this.cdr.detectChanges();
-    });
+      });
   }
 
-  addToFavorite() {
+  private checkIsFavorite() {
+    console.log('this.isFavorite', this.isFavorite);
+    // this.favService.getIsFavorite();
+    // (localStorage.getItem(cityName) === null) ? this.favService.setIsFavorite() : null;
+  }
+
+  private addToFavorite() {
+    this.favService.setIsFavorite();
+    console.log('this.isFavorite', this.isFavorite);
     if (this.selectedCity) {
       localStorage.setItem(this.selectedCity.LocalizedName, this.selectedCity.Key);
 
     } else {
       localStorage.setItem(this.defaultCity.LocalizedName, this.defaultCity.Key);
     }
+  }
 
+  private removeFromFavorite() {
+    this.favService.setIsFavorite();
+    console.log('this.isFavorite', this.isFavorite);
+    if (this.selectedCity) {
+      localStorage.removeItem(this.selectedCity.LocalizedName);
+    } else {
+      localStorage.removeItem(this.defaultCity.LocalizedName);
+    }
   }
 }
