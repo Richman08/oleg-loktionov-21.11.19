@@ -1,0 +1,181 @@
+{
+  "Headline": {
+    "EffectiveDate": "2019-11-24T19:00:00+02:00",
+    "EffectiveEpochDate": 1574614800,
+    "Severity": 2,
+    "Text": "Rain and a thunderstorm from Sunday evening to Monday afternoon can lead to flooding",
+    "Category": "rain",
+    "EndDate": "2019-11-25T19:00:00+02:00",
+    "EndEpochDate": 1574701200,
+    "MobileLink": "http://m.accuweather.com/en/gr/athens/182536/extended-weather-forecast/182536?unit=c&lang=en-us",
+    "Link": "http://www.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?unit=c&lang=en-us"
+  },
+  "DailyForecasts": [
+    {
+      "Date": "2019-11-22T07:00:00+02:00",
+      "EpochDate": 1574398800,
+      "Temperature": {
+        "Minimum": {
+          "Value": 11.6,
+          "Unit": "C",
+          "UnitType": 17
+        },
+        "Maximum": {
+          "Value": 19.9,
+          "Unit": "C",
+          "UnitType": 17
+        }
+      },
+      "Day": {
+        "Icon": 12,
+        "IconPhrase": "Showers",
+        "HasPrecipitation": true,
+        "PrecipitationType": "Rain",
+        "PrecipitationIntensity": "Light"
+      },
+      "Night": {
+        "Icon": 35,
+        "IconPhrase": "Partly cloudy",
+        "HasPrecipitation": false
+      },
+      "Sources": [
+        "AccuWeather"
+      ],
+      "MobileLink": "http://m.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?day=1&unit=c&lang=en-us",
+      "Link": "http://www.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?day=1&unit=c&lang=en-us"
+    },
+    {
+      "Date": "2019-11-23T07:00:00+02:00",
+      "EpochDate": 1574485200,
+      "Temperature": {
+        "Minimum": {
+          "Value": 12,
+          "Unit": "C",
+          "UnitType": 17
+        },
+        "Maximum": {
+          "Value": 18.4,
+          "Unit": "C",
+          "UnitType": 17
+        }
+      },
+      "Day": {
+        "Icon": 4,
+        "IconPhrase": "Intermittent clouds",
+        "HasPrecipitation": false
+      },
+      "Night": {
+        "Icon": 36,
+        "IconPhrase": "Intermittent clouds",
+        "HasPrecipitation": false
+      },
+      "Sources": [
+        "AccuWeather"
+      ],
+      "MobileLink": "http://m.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?day=2&unit=c&lang=en-us",
+      "Link": "http://www.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?day=2&unit=c&lang=en-us"
+    },
+    {
+      "Date": "2019-11-24T07:00:00+02:00",
+      "EpochDate": 1574571600,
+      "Temperature": {
+        "Minimum": {
+          "Value": 14.1,
+          "Unit": "C",
+          "UnitType": 17
+        },
+        "Maximum": {
+          "Value": 18.2,
+          "Unit": "C",
+          "UnitType": 17
+        }
+      },
+      "Day": {
+        "Icon": 12,
+        "IconPhrase": "Showers",
+        "HasPrecipitation": true,
+        "PrecipitationType": "Rain",
+        "PrecipitationIntensity": "Light"
+      },
+      "Night": {
+        "Icon": 18,
+        "IconPhrase": "Rain",
+        "HasPrecipitation": true,
+        "PrecipitationType": "Rain",
+        "PrecipitationIntensity": "Heavy"
+      },
+      "Sources": [
+        "AccuWeather"
+      ],
+      "MobileLink": "http://m.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?day=3&unit=c&lang=en-us",
+      "Link": "http://www.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?day=3&unit=c&lang=en-us"
+    },
+    {
+      "Date": "2019-11-25T07:00:00+02:00",
+      "EpochDate": 1574658000,
+      "Temperature": {
+        "Minimum": {
+          "Value": 12.5,
+          "Unit": "C",
+          "UnitType": 17
+        },
+        "Maximum": {
+          "Value": 17.6,
+          "Unit": "C",
+          "UnitType": 17
+        }
+      },
+      "Day": {
+        "Icon": 18,
+        "IconPhrase": "Rain",
+        "HasPrecipitation": true,
+        "PrecipitationType": "Rain",
+        "PrecipitationIntensity": "Heavy"
+      },
+      "Night": {
+        "Icon": 36,
+        "IconPhrase": "Intermittent clouds",
+        "HasPrecipitation": false
+      },
+      "Sources": [
+        "AccuWeather"
+      ],
+      "MobileLink": "http://m.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?day=4&unit=c&lang=en-us",
+      "Link": "http://www.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?day=4&unit=c&lang=en-us"
+    },
+    {
+      "Date": "2019-11-26T07:00:00+02:00",
+      "EpochDate": 1574744400,
+      "Temperature": {
+        "Minimum": {
+          "Value": 10,
+          "Unit": "C",
+          "UnitType": 17
+        },
+        "Maximum": {
+          "Value": 18.3,
+          "Unit": "C",
+          "UnitType": 17
+        }
+      },
+      "Day": {
+        "Icon": 4,
+        "IconPhrase": "Intermittent clouds",
+        "HasPrecipitation": true,
+        "PrecipitationType": "Rain",
+        "PrecipitationIntensity": "Light"
+      },
+      "Night": {
+        "Icon": 36,
+        "IconPhrase": "Intermittent clouds",
+        "HasPrecipitation": false
+      },
+      "Sources": [
+        "AccuWeather"
+      ],
+      "MobileLink": "http://m.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?day=5&unit=c&lang=en-us",
+      "Link": "http://www.accuweather.com/en/gr/athens/182536/daily-weather-forecast/182536?day=5&unit=c&lang=en-us"
+    }
+  ],
+  "jsonrpc": "2.0"
+}
