@@ -1,5 +1,6 @@
 import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {WeatherService} from '../../shared/services/weather.service';
+import {IWeather} from '../../shared/interfaces/weather.interface';
 
 @Component({
   selector: 'app-favorite',
@@ -9,20 +10,28 @@ import {WeatherService} from '../../shared/services/weather.service';
 })
 export class FavoriteComponent implements OnInit {
 
-  favoriteCities: [];
+  private favoriteCities = Object.keys({...localStorage});
+  private favoriteCitiesWeather: IWeather[] = [];
 
   constructor(private weatherService: WeatherService,
               private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.getFavoriteCities();
+    this.getFavoriteCitiesWeather();
   }
 
-  getFavoriteCities() {
+  private getFavoriteCitiesWeather() {
     const citiesKeys = Object.values({...localStorage});
-    this.weatherService.getCityWeather();
-    console.log(citiesKeys);
-    // this.favoriteCities = citiesKeys;
+    citiesKeys.forEach(cityKeys => {
+      this.weatherService.getCityWeather(cityKeys).subscribe((weather: IWeather) => {
+        console.log('city', weather[0]);
+        this.favoriteCitiesWeather.push(weather[0]);
+        console.log('this.favoriteCitiesWeather', this.favoriteCitiesWeather);
+        this.cdr.detectChanges();
+      });
+    });
+    console.log('favoriteCities', this.favoriteCities);
   }
+
 
 }

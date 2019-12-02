@@ -22,7 +22,7 @@
       <div class="home__weather-section">
         <div class="home__header-section">
           <div class="home__current-city">
-            <p class="home__city-name">{{ selectedCity?.LocalizedName || defaultCity?.LocalizedName }}</p>
+            <p class="home__city-name">{{ selectedCity?.LocalizedName }}</p>
             <span class="home__city-temperature">{{ currentCityWeather?.Temperature.Metric.Value || defaultCityWeather?.Temperature.Metric.Value }}°</span>
             <span>{{ currentCityWeather?.Temperature.Metric.Unit || defaultCityWeather?.Temperature.Metric.Unit }}</span>
           </div>
@@ -52,7 +52,10 @@
           </div>
         </div>
         <div class="home__current-weather">
-<!--          <img src="{{currentCityWeather?.WeatherIcon}}" alt="{{currentCityWeather?.WeatherText}}">-->
+          <img *ngIf="currentCityWeather && currentCityWeather.WeatherIcon || defaultCityWeather && defaultCityWeather.WeatherIcon"
+               src="{{apiUrl}}{{currentCityWeather?.WeatherIcon || defaultCityWeather?.WeatherIcon | addZero}}-s.png"
+               alt="{{currentCityWeather?.WeatherText}}"
+               class="home__weather-icon">
           <p class="home__weather-title">{{ currentCityWeather?.WeatherText || defaultCityWeather?.WeatherText }}</p>
         </div>
         <div class="home__daily-forecast-section">

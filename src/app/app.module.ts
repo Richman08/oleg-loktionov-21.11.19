@@ -15,7 +15,9 @@ import { FavoriteComponent } from './components/favorite/favorite.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 
 import {CitiesService} from './shared/services/cities.service';
-import {FavoriteService} from './shared/services/favorite.service';
+import {LoaderService} from './shared/services/loader.service';
+import {WeatherService} from './shared/services/weather.service';
+import { AddZeroPipe } from './shared/pipes/add-zero.pipe';
 
 
 @NgModule({
@@ -25,6 +27,7 @@ import {FavoriteService} from './shared/services/favorite.service';
     HomeComponent,
     FavoriteComponent,
     HeaderComponent,
+    AddZeroPipe,
   ],
   imports: [
     CoreModule,
@@ -38,7 +41,8 @@ import {FavoriteService} from './shared/services/favorite.service';
   ],
   providers: [
     CitiesService,
-    FavoriteService
+    LoaderService,
+    WeatherService
   ],
   bootstrap: [AppComponent]
 })

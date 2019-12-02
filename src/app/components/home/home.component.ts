@@ -1,14 +1,14 @@
 import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {CitiesService} from '../../shared/services/cities.service';
 import {ICityInfo} from '../../shared/interfaces/cities.interface';
-import {from, Observable, of, Subject} from 'rxjs';
-import {debounceTime, map, startWith, switchMap} from 'rxjs/operators';
-import {FavoriteService} from '../../shared/services/favorite.service';
+import {Observable, of, Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, startWith, switchMap} from 'rxjs/operators';
 import {IWeather} from '../../shared/interfaces/weather.interface';
 import {WeatherService} from '../../shared/services/weather.service';
 import {IDailyForecast} from '../../shared/interfaces/daily-forecast';
 import {formatDisplayedTimePipe} from '../../shared/pipes/displayed-time.rx-pipe';
+import {ThirdPartyApi} from '../../shared/enums/third-party-api.enum';
 
 @Component({
   selector: 'app-home',
@@ -21,20 +21,19 @@ export class HomeComponent implements OnInit {
   searchForm!: FormGroup;
   citiesList$: Observable<any[]>;
   citiesList: ICityInfo[] = [];
-  defaultCity: ICityInfo;
   selectedCity: ICityInfo;
   defaultCityWeather: IWeather;
   defaultCityId = '215854';
   dailyForecast: IDailyForecast[] = [];
   currentCityWeather: IWeather;
   isFavorite: boolean;
+  selectedCity$: Subject<ICityInfo> = new Subject<ICityInfo>();
+  apiUrl = ThirdPartyApi.WEATHER_ICONS;
 
-  constructor(private  fb: FormBuilder,
+  constructor(private fb: FormBuilder,
               private citiesService: CitiesService,
               private weatherService: WeatherService,
-              private favService: FavoriteService,
               private cdr: ChangeDetectorRef) {
-    // this.isFavorite = this.favService.isFavorite$;
   }
 
   ngOnInit() {
@@ -44,8 +43,17 @@ export class HomeComponent implements OnInit {
     this.getDefaultCityWeather(this.defaultCityId);
     this.initDailyForecast();
     this.filteredCities();
-    this.checkIsFavorite();
-    this.favService.isFavorite$.subscribe(item => this.isFavorite = item);
+    this.selectedCity$.subscribe(city => {
+      this.selectedCity = city;
+      this.cdr.detectChanges();
+      this.findFavoriteCities(city) ? this.isFavorite = true : this.isFavorite = false;
+    });
+
+  }
+
+  findFavoriteCities(city) {
+    const favoriteCitiesList = Object.values({...localStorage});
+    return favoriteCitiesList.find(item => item === city.Key);
   }
 
   private initSearchForm() {
@@ -55,18 +63,20 @@ export class HomeComponent implements OnInit {
   }
 
   private initDefaultCity() {
-    this.citiesService.getCities()
+    this.citiesService.getCities(this.defaultCityId)
       .subscribe((citiesList: ICityInfo[]) => {
-        this.defaultCity = citiesList.find((item) => item.Key === '215854');
+        const defaultCity = citiesList.find((item) => item.Key === '215854');
+        this.selectedCity$.next(defaultCity);
         this.cdr.detectChanges();
-        console.log('this.defaultCity', this.defaultCity);
       });
   }
 
   private initCitiesList() {
-    this.citiesService.getCities()
+    this.citiesService.getCities('telaviv')
       .subscribe((citiesList: ICityInfo[]) => {
         this.citiesList = citiesList;
+        console.log('this.citiesList', this.citiesList);
+        console.log('citiesList', citiesList);
       });
   }
 
@@ -75,8 +85,10 @@ export class HomeComponent implements OnInit {
       .valueChanges
       .pipe(
         debounceTime(500),
+        distinctUntilChanged(),
         startWith(null),
         map((item: string | null) => {
+          console.log('item', item);
           return item ? this._filterCities(item).sort() : this.citiesList.slice();
         })
       );
@@ -88,8 +100,8 @@ export class HomeComponent implements OnInit {
     return this.citiesList.filter(city => city.LocalizedName.toLowerCase().indexOf(filterValue) === 0);
   }
 
-  private getDefaultCityWeather(Key) {
-    this.weatherService.getDefaultCityWeather().subscribe((defaultCity) => {
+  private getDefaultCityWeather(key) {
+    this.weatherService.getDefaultCityWeather(key).subscribe((defaultCity) => {
       this.defaultCityWeather = defaultCity[0];
       console.log(' this.defaultCityWeather', this.defaultCityWeather);
       this.cdr.detectChanges();
@@ -97,8 +109,9 @@ export class HomeComponent implements OnInit {
   }
 
   private getCurrentCityWeather(cityName) {
-    this.selectedCity = this.citiesList.find((item) => item.LocalizedName === cityName);
-    this.weatherService.getCityWeather().subscribe((currCity) => {
+    const selectedCity = this.citiesList.find((item) => item.LocalizedName === cityName);
+    this.selectedCity$.next(selectedCity);
+    this.weatherService.getCityWeather(selectedCity.Key).subscribe((currCity) => {
       this.currentCityWeather = currCity[0];
       console.log('this.currentCityWeather', this.currentCityWeather);
       this.cdr.detectChanges();
@@ -106,7 +119,7 @@ export class HomeComponent implements OnInit {
   }
 
   private initDailyForecast() {
-    this.weatherService.getDailyForecast()
+    this.weatherService.getDailyForecast(this.defaultCityId || this.selectedCity.Key)
       .pipe(
         switchMap((data) => of(data[0].DailyForecasts)
           .pipe(
@@ -119,30 +132,21 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  private checkIsFavorite() {
-    console.log('this.isFavorite', this.isFavorite);
-    // this.favService.getIsFavorite();
-    // (localStorage.getItem(cityName) === null) ? this.favService.setIsFavorite() : null;
-  }
-
   private addToFavorite() {
-    this.favService.setIsFavorite();
     console.log('this.isFavorite', this.isFavorite);
     if (this.selectedCity) {
       localStorage.setItem(this.selectedCity.LocalizedName, this.selectedCity.Key);
-
-    } else {
-      localStorage.setItem(this.defaultCity.LocalizedName, this.defaultCity.Key);
+      this.isFavorite = true;
     }
   }
 
   private removeFromFavorite() {
-    this.favService.setIsFavorite();
     console.log('this.isFavorite', this.isFavorite);
     if (this.selectedCity) {
+      this.isFavorite = false;
       localStorage.removeItem(this.selectedCity.LocalizedName);
-    } else {
-      localStorage.removeItem(this.defaultCity.LocalizedName);
     }
   }
+
+
 }

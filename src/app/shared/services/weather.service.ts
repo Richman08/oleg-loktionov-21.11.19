@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BaseApiService} from '../../@core/api/shared/base-api.service';
-import {environment} from '../../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
@@ -9,23 +8,20 @@ import {environment} from '../../../environments/environment.prod';
 export class WeatherService {
 
   apiUrl = 'http://dataservice.accuweather.com/';
+  apikey = 'x1wQAd1iMlajti2taIUdkAAZXG6LGdTf';
 
   constructor(private http: HttpClient,
               private apiService: BaseApiService) { }
 
-  getCityWeather() {
-    return this.apiService.get('current-city.json');
+  getCityWeather(id) {
+    return this.http.get(`${this.apiUrl}currentconditions/v1/${id}?apikey=${this.apikey}&details=false`);
   }
 
-  getCityWether(id) {
-    return this.http.get(`${this.apiUrl}currentconditions/v1/${id} `);
+  getDefaultCityWeather(id) {
+    return this.http.get(`${this.apiUrl}currentconditions/v1/${id}?apikey=${this.apikey}&details=false`);
   }
 
-  getDefaultCityWeather() {
-    return this.apiService.get('default-city-weather.json');
-  }
-
-  getDailyForecast() {
-    return this.apiService.get('default-city-forecast.json');
+  getDailyForecast(id) {
+    return this.http.get(`${this.apiUrl}forecasts/v1/daily/5day/${id}?apikey=${this.apikey}&details=false&metric=true`);
   }
 }

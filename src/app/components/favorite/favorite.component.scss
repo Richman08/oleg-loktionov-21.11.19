@@ -15,4 +15,27 @@
     flex-wrap: wrap;
     margin: 0 auto;
   }
+
+  &__city-weather-block {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__city-name-block {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  &__weather-block {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  &__city-name, &__city-weather {
+    min-width: 100px;
+    margin: 1rem 0.5rem 0 0.5rem;
+    text-align: center;
+  }
 }

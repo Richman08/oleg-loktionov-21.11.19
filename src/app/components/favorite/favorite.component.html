@@ -2,16 +2,21 @@
   <mat-sidenav-content>
     <div class="favorite__main-content">
       <div class="favorite__cities-section">
-        <p>test text</p>
-        <div class="favorite__city-weather-block"
-             *ngFor="let city of citiesList$">
-          <div class="favorite__city-name">
-            <p>{{ city.LocalizedName }}</p>
+        <div class="favorite__city-weather-block">
+          <div class="favorite__city-name-block">
+            <div  *ngFor="let city of favoriteCities"
+                  class="favorite__city-name">
+              <p>{{ city }}</p>
+            </div>
           </div>
-          <div class="favorite__city-weather">
-            <p class="favorite__city-temperature">{{ city?.Temperature.Maximum.Value }}°</p>
-            <span>{{ city?.Temperature.Maximum.Unit }}</span>
-            <p class="favorite__weather-text">{{ city?.WeatherText }}</p>
+          <div class="favorite__weather-block">
+            <div *ngFor="let city of favoriteCitiesWeather let i = index">
+              <div class="favorite__city-weather">
+                <p class="favorite__city-temperature">{{ city?.Temperature.Metric.Value }}°</p>
+                <span>{{ city?.Temperature.Metric.Unit }}</span>
+                <p class="favorite__weather-text">{{ city?.WeatherText }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

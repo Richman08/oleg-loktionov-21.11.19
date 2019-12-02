@@ -7,10 +7,13 @@ import {BaseApiService} from '../../@core/api/shared/base-api.service';
 })
 export class CitiesService {
 
+  apiUrl = 'http://dataservice.accuweather.com/';
+  apikey = 'x1wQAd1iMlajti2taIUdkAAZXG6LGdTf';
+
   constructor(private http: HttpClient,
               private apiService: BaseApiService) { }
 
-  getCities() {
-    return this.apiService.get('autocomplete-search.json');
+  getCities(text) {
+    return this.http.get(`${this.apiUrl}locations/v1/cities/autocomplete?apikey=${this.apikey}$q=${text}`);
   }
 }

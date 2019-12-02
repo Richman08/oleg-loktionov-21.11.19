@@ -47,9 +47,14 @@
   &__current-weather, &__weather-title {
     display: flex;
     width: 100%;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin: 30px 0;
+  }
+
+  &__weather-icon {
+    height: 200px;
   }
 
   &__daily-forecast-section {
