@@ -10,8 +10,8 @@ import {IWeather} from '../../shared/interfaces/weather.interface';
 })
 export class FavoriteComponent implements OnInit {
 
-  private favoriteCities = Object.keys({...localStorage});
-  private favoriteCitiesWeather: IWeather[] = [];
+  favoriteCities = Object.keys({...localStorage});
+  favoriteCitiesWeather: IWeather[] = [];
 
   constructor(private weatherService: WeatherService,
               private cdr: ChangeDetectorRef) { }
@@ -22,16 +22,16 @@ export class FavoriteComponent implements OnInit {
 
   private getFavoriteCitiesWeather() {
     const citiesKeys = Object.values({...localStorage});
-    citiesKeys.forEach(cityKeys => {
+    const citiesName = Object.keys({...localStorage});
+    citiesKeys.forEach((cityKeys, index) => {
       this.weatherService.getCityWeather(cityKeys).subscribe((weather: IWeather) => {
-        console.log('city', weather[0]);
-        this.favoriteCitiesWeather.push(weather[0]);
-        console.log('this.favoriteCitiesWeather', this.favoriteCitiesWeather);
+        const cityWeather = {
+          ...weather[0],
+          LocalizedName: citiesName[index]
+        };
+        this.favoriteCitiesWeather.push(cityWeather);
         this.cdr.detectChanges();
       });
     });
-    console.log('favoriteCities', this.favoriteCities);
   }
-
-
 }

@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {CitiesService} from '../../shared/services/cities.service';
 import {ICityInfo} from '../../shared/interfaces/cities.interface';
 import {Observable, of, Subject} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, startWith, switchMap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, filter, map, startWith, switchMap} from 'rxjs/operators';
 import {IWeather} from '../../shared/interfaces/weather.interface';
 import {WeatherService} from '../../shared/services/weather.service';
 import {IDailyForecast} from '../../shared/interfaces/daily-forecast';
@@ -19,9 +19,9 @@ import {ThirdPartyApi} from '../../shared/enums/third-party-api.enum';
 export class HomeComponent implements OnInit {
 
   searchForm!: FormGroup;
-  citiesList$: Observable<any[]>;
   citiesList: ICityInfo[] = [];
   selectedCity: ICityInfo;
+  defaultCity: ICityInfo[] = [];
   defaultCityWeather: IWeather;
   defaultCityId = '215854';
   dailyForecast: IDailyForecast[] = [];
@@ -38,7 +38,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.initSearchForm();
-    this.initCitiesList();
     this.initDefaultCity();
     this.getDefaultCityWeather(this.defaultCityId);
     this.initDailyForecast();
@@ -48,7 +47,6 @@ export class HomeComponent implements OnInit {
       this.cdr.detectChanges();
       this.findFavoriteCities(city) ? this.isFavorite = true : this.isFavorite = false;
     });
-
   }
 
   findFavoriteCities(city) {
@@ -63,41 +61,31 @@ export class HomeComponent implements OnInit {
   }
 
   private initDefaultCity() {
-    this.citiesService.getCities(this.defaultCityId)
-      .subscribe((citiesList: ICityInfo[]) => {
-        const defaultCity = citiesList.find((item) => item.Key === '215854');
-        this.selectedCity$.next(defaultCity);
+    this.citiesService.getCities('tel aviv')
+      .subscribe((citiesList: any) => {
+        console.log('citiesList', citiesList);
+        this.defaultCity = citiesList;
+        console.log('defaultCity', this.defaultCity);
+        this.selectedCity$.next(this.defaultCity[0]);
         this.cdr.detectChanges();
       });
   }
 
-  private initCitiesList() {
-    this.citiesService.getCities('telaviv')
-      .subscribe((citiesList: ICityInfo[]) => {
-        this.citiesList = citiesList;
-        console.log('this.citiesList', this.citiesList);
-        console.log('citiesList', citiesList);
-      });
-  }
-
   private filteredCities() {
-    this.citiesList$ = this.searchForm.get('citySearch')
+    this.searchForm.get('citySearch')
       .valueChanges
       .pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        startWith(null),
-        map((item: string | null) => {
-          console.log('item', item);
-          return item ? this._filterCities(item).sort() : this.citiesList.slice();
-        })
-      );
-    this.cdr.detectChanges();
-  }
-
-  private _filterCities(value: string): any[] {
-    const filterValue = value.toLocaleLowerCase();
-    return this.citiesList.filter(city => city.LocalizedName.toLowerCase().indexOf(filterValue) === 0);
+        filter(value => value !== ''),
+        debounceTime(800),
+        filter(text => this.citiesList ? !this.citiesList.find(item => item.LocalizedName === text) : true),
+        distinctUntilChanged())
+      .subscribe(text => {
+        this.citiesService.getCities(text).subscribe((data: ICityInfo[]) => {
+          console.log('data', data);
+          this.citiesList = data;
+          this.cdr.detectChanges();
+        });
+      });
   }
 
   private getDefaultCityWeather(key) {
@@ -108,7 +96,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  private getCurrentCityWeather(cityName) {
+  getCurrentCityWeather(cityName) {
     const selectedCity = this.citiesList.find((item) => item.LocalizedName === cityName);
     this.selectedCity$.next(selectedCity);
     this.weatherService.getCityWeather(selectedCity.Key).subscribe((currCity) => {
@@ -119,7 +107,7 @@ export class HomeComponent implements OnInit {
   }
 
   private initDailyForecast() {
-    this.weatherService.getDailyForecast(this.defaultCityId || this.selectedCity.Key)
+    this.weatherService.getDailyForecast(this.defaultCity[0].Key || this.selectedCity[0].Key)
       .pipe(
         switchMap((data) => of(data[0].DailyForecasts)
           .pipe(

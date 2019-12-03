@@ -12,7 +12,7 @@
                  formControlName="citySearch">
           <mat-autocomplete #auto="matAutocomplete"
                             (optionSelected)="getCurrentCityWeather($event.option.value)">
-            <mat-option *ngFor="let city of citiesList$ | async"
+            <mat-option *ngFor="let city of citiesList"
                         [value]="city.LocalizedName">
               {{ city.LocalizedName }}
             </mat-option>
@@ -22,7 +22,7 @@
       <div class="home__weather-section">
         <div class="home__header-section">
           <div class="home__current-city">
-            <p class="home__city-name">{{ selectedCity?.LocalizedName }}</p>
+            <p class="home__city-name">{{ selectedCity?.LocalizedName || defaultCity[0]?.LocalizedName }}</p>
             <span class="home__city-temperature">{{ currentCityWeather?.Temperature.Metric.Value || defaultCityWeather?.Temperature.Metric.Value }}°</span>
             <span>{{ currentCityWeather?.Temperature.Metric.Unit || defaultCityWeather?.Temperature.Metric.Unit }}</span>
           </div>

@@ -14,6 +14,6 @@ export class CitiesService {
               private apiService: BaseApiService) { }
 
   getCities(text) {
-    return this.http.get(`${this.apiUrl}locations/v1/cities/autocomplete?apikey=${this.apikey}$q=${text}`);
+    return this.http.get(`${this.apiUrl}locations/v1/cities/autocomplete?apikey=${this.apikey}&q=${text}`);
   }
 }
