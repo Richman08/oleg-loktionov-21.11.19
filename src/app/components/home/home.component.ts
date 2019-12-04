@@ -40,7 +40,6 @@ export class HomeComponent implements OnInit {
     this.initSearchForm();
     this.initDefaultCity();
     this.getDefaultCityWeather(this.defaultCityId);
-    this.initDailyForecast();
     this.filteredCities();
     this.selectedCity$.subscribe(city => {
       this.selectedCity = city;
@@ -63,10 +62,10 @@ export class HomeComponent implements OnInit {
   private initDefaultCity() {
     this.citiesService.getCities('tel aviv')
       .subscribe((citiesList: any) => {
-        console.log('citiesList', citiesList);
         this.defaultCity = citiesList;
         console.log('defaultCity', this.defaultCity);
         this.selectedCity$.next(this.defaultCity[0]);
+        this.initDailyForecast();
         this.cdr.detectChanges();
       });
   }
@@ -76,13 +75,15 @@ export class HomeComponent implements OnInit {
       .valueChanges
       .pipe(
         filter(value => value !== ''),
-        debounceTime(800),
+        debounceTime(500),
         filter(text => this.citiesList ? !this.citiesList.find(item => item.LocalizedName === text) : true),
-        distinctUntilChanged())
+        distinctUntilChanged()
+      )
       .subscribe(text => {
         this.citiesService.getCities(text).subscribe((data: ICityInfo[]) => {
           console.log('data', data);
           this.citiesList = data;
+          this.initDailyForecast();
           this.cdr.detectChanges();
         });
       });
@@ -99,22 +100,25 @@ export class HomeComponent implements OnInit {
   getCurrentCityWeather(cityName) {
     const selectedCity = this.citiesList.find((item) => item.LocalizedName === cityName);
     this.selectedCity$.next(selectedCity);
-    this.weatherService.getCityWeather(selectedCity.Key).subscribe((currCity) => {
-      this.currentCityWeather = currCity[0];
-      console.log('this.currentCityWeather', this.currentCityWeather);
-      this.cdr.detectChanges();
-    });
+    this.weatherService.getCityWeather(selectedCity.Key)
+      .subscribe((currCity) => {
+        this.currentCityWeather = currCity[0];
+        console.log('this.currentCityWeather', this.currentCityWeather);
+        this.initDailyForecast();
+        this.cdr.detectChanges();
+      });
   }
 
   private initDailyForecast() {
-    this.weatherService.getDailyForecast(this.defaultCity[0].Key || this.selectedCity[0].Key)
+    this.weatherService.getDailyForecast(this.selectedCity.Key)
       .pipe(
-        switchMap((data) => of(data[0].DailyForecasts)
+        switchMap((data: any) => of(data.DailyForecasts)
           .pipe(
             formatDisplayedTimePipe('Date', 'displayedDate')
           ))
       )
-      .subscribe((dailyForecasts) => {
+      .subscribe((dailyForecasts: IDailyForecast[]) => {
+        console.log('dailyForecasts', dailyForecasts);
         this.dailyForecast = dailyForecasts;
         this.cdr.detectChanges();
       });
