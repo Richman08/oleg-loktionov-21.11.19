@@ -3,6 +3,7 @@ export interface IWeather {
   WeatherText: string;
   Temperature: ITemperature;
   LocalizedName: string;
+  Key: string;
 }
 
 export interface ITemperature {

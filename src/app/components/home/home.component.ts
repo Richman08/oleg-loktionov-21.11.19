@@ -2,13 +2,14 @@ import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@an
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {CitiesService} from '../../shared/services/cities.service';
 import {ICityInfo} from '../../shared/interfaces/cities.interface';
-import {Observable, of, Subject} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, map, startWith, switchMap} from 'rxjs/operators';
+import {of, Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
 import {IWeather} from '../../shared/interfaces/weather.interface';
 import {WeatherService} from '../../shared/services/weather.service';
 import {IDailyForecast} from '../../shared/interfaces/daily-forecast';
 import {formatDisplayedTimePipe} from '../../shared/pipes/displayed-time.rx-pipe';
 import {ThirdPartyApi} from '../../shared/enums/third-party-api.enum';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -33,6 +34,7 @@ export class HomeComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private citiesService: CitiesService,
               private weatherService: WeatherService,
+              private aRoute: ActivatedRoute,
               private cdr: ChangeDetectorRef) {
   }
 
@@ -41,16 +43,25 @@ export class HomeComponent implements OnInit {
     this.initDefaultCity();
     this.getDefaultCityWeather(this.defaultCityId);
     this.filteredCities();
+    this.showFavCityWeather();
     this.selectedCity$.subscribe(city => {
       this.selectedCity = city;
-      this.cdr.detectChanges();
       this.findFavoriteCities(city) ? this.isFavorite = true : this.isFavorite = false;
+      this.cdr.detectChanges();
     });
   }
 
   findFavoriteCities(city) {
     const favoriteCitiesList = Object.values({...localStorage});
     return favoriteCitiesList.find(item => item === city.Key);
+  }
+
+  getfavCity(name) {
+    this.citiesService.getCities(name)
+      .subscribe((city) => {
+        console.log('city', city);
+        this.selectedCity = city.find(item => item.LocalizedName === name);
+      });
   }
 
   private initSearchForm() {
@@ -63,7 +74,6 @@ export class HomeComponent implements OnInit {
     this.citiesService.getCities('tel aviv')
       .subscribe((citiesList: any) => {
         this.defaultCity = citiesList;
-        console.log('defaultCity', this.defaultCity);
         this.selectedCity$.next(this.defaultCity[0]);
         this.initDailyForecast();
         this.cdr.detectChanges();
@@ -81,7 +91,6 @@ export class HomeComponent implements OnInit {
       )
       .subscribe(text => {
         this.citiesService.getCities(text).subscribe((data: ICityInfo[]) => {
-          console.log('data', data);
           this.citiesList = data;
           this.initDailyForecast();
           this.cdr.detectChanges();
@@ -92,21 +101,25 @@ export class HomeComponent implements OnInit {
   private getDefaultCityWeather(key) {
     this.weatherService.getDefaultCityWeather(key).subscribe((defaultCity) => {
       this.defaultCityWeather = defaultCity[0];
-      console.log(' this.defaultCityWeather', this.defaultCityWeather);
       this.cdr.detectChanges();
     });
   }
 
   getCurrentCityWeather(cityName) {
-    const selectedCity = this.citiesList.find((item) => item.LocalizedName === cityName);
+    const selectedCity = this.citiesList.find(item => item.LocalizedName === cityName);
     this.selectedCity$.next(selectedCity);
     this.weatherService.getCityWeather(selectedCity.Key)
       .subscribe((currCity) => {
         this.currentCityWeather = currCity[0];
-        console.log('this.currentCityWeather', this.currentCityWeather);
         this.initDailyForecast();
         this.cdr.detectChanges();
       });
+  }
+
+  showFavCityWeather() {
+    const id = this.aRoute.snapshot.queryParamMap.get('key');
+    const cityName = this.aRoute.snapshot.queryParamMap.get('cityName');
+
   }
 
   private initDailyForecast() {
@@ -118,14 +131,12 @@ export class HomeComponent implements OnInit {
           ))
       )
       .subscribe((dailyForecasts: IDailyForecast[]) => {
-        console.log('dailyForecasts', dailyForecasts);
         this.dailyForecast = dailyForecasts;
         this.cdr.detectChanges();
       });
   }
 
   private addToFavorite() {
-    console.log('this.isFavorite', this.isFavorite);
     if (this.selectedCity) {
       localStorage.setItem(this.selectedCity.LocalizedName, this.selectedCity.Key);
       this.isFavorite = true;
@@ -133,12 +144,9 @@ export class HomeComponent implements OnInit {
   }
 
   private removeFromFavorite() {
-    console.log('this.isFavorite', this.isFavorite);
     if (this.selectedCity) {
       this.isFavorite = false;
       localStorage.removeItem(this.selectedCity.LocalizedName);
     }
   }
-
-
 }
