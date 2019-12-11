@@ -9,10 +9,12 @@ import {LoaderService} from '../../services/loader.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoaderComponent implements OnInit {
+
   mode = 'indeterminate';
-  isLoading = new Observable<boolean>();
+  isLoading$ = new Observable<boolean>();
+
   constructor(private loaderService: LoaderService) {
-    this.isLoading = this.loaderService.isLoading;
+    this.isLoading$ = this.loaderService.isLoading;
   }
 
   ngOnInit() {

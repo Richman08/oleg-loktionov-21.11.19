@@ -10,14 +10,11 @@ export class LoaderService {
   private _isLoading = new Subject<boolean>();
   public isLoading = this._isLoading.asObservable();
 
-  show() {
-  this._isLoading.next(true);
+  show(): void {
+    this._isLoading.next(true);
   }
 
-  hide() {
+  hide(): void {
     this._isLoading.next(false);
   }
-
-  constructor() {}
 }
-
