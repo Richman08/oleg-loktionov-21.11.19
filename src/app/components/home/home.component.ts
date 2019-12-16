@@ -3,14 +3,15 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {CitiesService} from '../../shared/services/cities.service';
 import {ICityInfo} from '../../shared/interfaces/cities.interface';
 import {of, Subject} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, switchMap, takeUntil} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil} from 'rxjs/operators';
 import {IWeather} from '../../shared/interfaces/weather.interface';
 import {WeatherService} from '../../shared/services/weather.service';
 import {IDailyForecast} from '../../shared/interfaces/daily-forecast';
 import {formatDisplayedTimePipe} from '../../shared/pipes/displayed-time.rx-pipe';
 import {ThirdPartyApi} from '../../shared/enums/third-party-api.enum';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {NgOnDestroy} from '../../@core/shared/services/destroy.service';
+import {RouterService} from '../../shared/services/router.service';
 
 @Component({
   selector: 'app-home',
@@ -36,6 +37,8 @@ export class HomeComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private citiesService: CitiesService,
               private weatherService: WeatherService,
+              private routerService: RouterService,
+              private router: Router,
               private aRoute: ActivatedRoute,
               private cdr: ChangeDetectorRef,
               @Self() private ngOnDestroy$: NgOnDestroy) {
@@ -46,7 +49,8 @@ export class HomeComponent implements OnInit {
     this.initDefaultCity();
     this.getDefaultCityWeather(this.defaultCityId);
     this.filteredCities();
-    this.showFavCityWeather();
+    // this.showFavCityWeather();
+    this.getfavCity();
     this.selectedCity$.subscribe(city => {
       this.selectedCity = city;
       this.findFavoriteCities(city) ? this.isFavorite = true : this.isFavorite = false;
@@ -57,17 +61,6 @@ export class HomeComponent implements OnInit {
   findFavoriteCities(city) {
     const favoriteCitiesList = Object.values({...localStorage});
     return favoriteCitiesList.find(item => item === city.Key);
-  }
-
-  getfavCity(name): void {
-    this.citiesService.getCities(name)
-      .pipe(
-        takeUntil(this.ngOnDestroy$)
-      )
-      .subscribe((city) => {
-        console.log('city', city);
-        this.selectedCity = city.find(item => item.LocalizedName === name);
-      });
   }
 
   private initSearchForm(): void {
@@ -102,6 +95,7 @@ export class HomeComponent implements OnInit {
       .subscribe(text => {
         this.citiesService.getCities(text).subscribe((data: ICityInfo[]) => {
           this.citiesList = data;
+          this.routerService.removeQueryParams();
           this.initDailyForecast();
           this.cdr.detectChanges();
         });
@@ -114,9 +108,9 @@ export class HomeComponent implements OnInit {
         takeUntil(this.ngOnDestroy$)
       )
       .subscribe((defaultCity) => {
-      this.defaultCityWeather = defaultCity[0];
-      this.cdr.detectChanges();
-    });
+        this.defaultCityWeather = defaultCity[0];
+        this.cdr.detectChanges();
+      });
   }
 
   getCurrentCityWeather(cityName): void {
@@ -133,10 +127,35 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  showFavCityWeather(): void {
-    const id = this.aRoute.snapshot.queryParamMap.get('key');
+  getfavCity(): void {
     const cityName = this.aRoute.snapshot.queryParamMap.get('cityName');
+    if (cityName != null) {
+      this.citiesService.getCities(cityName)
+        .pipe(
+          takeUntil(this.ngOnDestroy$)
+        )
+        .subscribe((city) => {
+          this.selectedCity = city.find((item: ICityInfo) => item.LocalizedName === cityName);
+          this.showFavCityWeather();
+          this.cdr.detectChanges();
+        });
+    }
+  }
 
+  showFavCityWeather() {
+    const id = this.aRoute.snapshot.queryParamMap.get('key');
+    if (this.selectedCity !== undefined) {
+      this.selectedCity$.next(this.selectedCity);
+      this.weatherService.getCityWeather(id)
+        .pipe(
+          takeUntil(this.ngOnDestroy$)
+        )
+        .subscribe((currCity) => {
+          this.currentCityWeather = currCity[0];
+          this.initDailyForecast();
+          this.cdr.detectChanges();
+        });
+    }
   }
 
   private initDailyForecast(): void {

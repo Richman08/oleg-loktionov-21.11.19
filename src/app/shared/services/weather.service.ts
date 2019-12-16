@@ -8,7 +8,7 @@ import {BaseApiService} from '../../@core/api/shared/base-api.service';
 export class WeatherService {
 
   apiUrl = 'http://dataservice.accuweather.com/';
-  apikey = 'x1wQAd1iMlajti2taIUdkAAZXG6LGdTf';
+  apikey = 'J1LlVzS5uw2srgtUy52vGqQdZnfuNX0k';
 
   constructor(private http: HttpClient,
               private apiService: BaseApiService) { }
